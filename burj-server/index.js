@@ -37,6 +37,7 @@ client.connect(err => {
   })
 
   app.get('/bookings', (req, res) => {
+    console.log(req.headers.authorization);
     collection.find({})
     .toArray((err, documents) => {
       res.send(documents);

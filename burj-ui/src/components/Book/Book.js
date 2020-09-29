@@ -49,7 +49,13 @@ const Book = () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:5000/bookings')
+        fetch('http://localhost:5000/bookings', {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json', 
+                authorization: `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
         .then(res => res.json())
         .then(data => setBookingData(data));
     }, [])

@@ -25,12 +25,24 @@ const Login = () => {
             const {displayName, email} = result.user;
             const signedInUser = {name: displayName, email: email}
             setSignedInUser(signedInUser);
+            storeAuthToken();
             history.replace(from);
           }).catch(function(error) {
             var errorMessage = error.message;
             console.log(errorMessage);
           });
     }
+
+    const storeAuthToken = () => {
+        firebase.auth().currentUser.getIdToken( true )
+        .then( (idToken) => {
+            sessionStorage.setItem('token', idToken);
+        })
+        .catch( (error) => {
+            // Handle error
+        })
+    }
+
     return (
         <div className="login-btn">
             <Button onClick={googleSignIn} variant="contained" color="primary">
