@@ -27,12 +27,12 @@ function App() {
             <Route path="/login">
               <Login />
             </Route>
-            {/* <PrivateRoute path="/book/:bedType">
+            <PrivateRoute path="/book/:bedType">
               <Book />
-            </PrivateRoute> */}
-            <Route path="/book/:bedType">
+            </PrivateRoute>
+            {/* <Route path="/book/:bedType">
               <Book />
-            </Route>
+            </Route> */}
             <Route exact path="/">
               <Home />
             </Route>

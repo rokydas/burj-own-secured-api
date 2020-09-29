@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { UserContext } from '../../App';
+import ShowBooking from '../ShowBooking/ShowBooking';
 
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
@@ -15,6 +16,7 @@ import { Button } from '@material-ui/core';
 const Book = () => {
     const { bedType } = useParams();
     const [signedInUser, setSignedInUser] = useContext(UserContext);
+    const [bookingData, setBookingData] = useState([]);
 
     const [selectedDate, setSelectedDate] = useState({
         checkIn: new Date(),
@@ -34,8 +36,25 @@ const Book = () => {
     };
     
     const handleBooking = () => {
-
+        const newBooking = {...signedInUser, ...selectedDate};
+        fetch('http://localhost:5000/addBooking', {
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBooking)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+        });
     }
+
+    useEffect(() => {
+        fetch('http://localhost:5000/bookings')
+        .then(res => res.json())
+        .then(data => setBookingData(data));
+    }, [])
+
+    const matchedBooking = bookingData.filter(booking => booking.email == signedInUser.email);
 
     return (
         <div style={{textAlign: 'center'}}>
@@ -73,10 +92,14 @@ const Book = () => {
                     />
 
                 </Grid>
-                <Button onClick={handleBooking} variant="contained" color="primary">
-                    Book Now
-                </Button>
             </MuiPickersUtilsProvider>
+            <Button onClick={handleBooking} variant="contained" color="primary">
+                    Book Now
+            </Button>
+            <h3 className="text-center">Number of your bookings: {matchedBooking.length}</h3>
+            {
+                matchedBooking.map(booking => <ShowBooking data={booking} />)
+            }
         </div>
     );
 };
