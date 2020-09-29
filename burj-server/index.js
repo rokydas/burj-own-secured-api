@@ -13,12 +13,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+var admin = require('firebase-admin');
 
-var admin = require("firebase-admin");
+var serviceAccount = require('./burj-al-arab-roky-firebase-adminsdk-t2q8i-baf1d981b1.json');
 
-var serviceAccount = require("burj-al-arab-roky-firebase-adminsdk-t2q8i-baf1d981b1.json");
-
-admin.initializeApp({
+admin.initializeApp({ 
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://burj-al-arab-roky.firebaseio.com"
 });
@@ -48,11 +47,34 @@ client.connect(err => {
   })
 
   app.get('/bookings', (req, res) => {
-    console.log(req.headers.authorization);
-    collection.find({})
-    .toArray((err, documents) => {
-      res.send(documents);
-    })
+    const bearer = req.headers.authorization;
+
+    if(bearer && bearer.startsWith('Bearer ')) {
+      const idToken = bearer.split(' ')[1];
+      console.log({idToken});
+      admin.auth().verifyIdToken(idToken)
+      .then(function(decodedToken) {
+        // let uid = decodedToken.uid;
+        // console.log({uid});
+        const tokenEmail = decodedToken.email;
+        const queryEmail = req.query.email;
+
+        console.log(tokenEmail, queryEmail);
+
+        if(tokenEmail == queryEmail) {
+          collection.find({})
+          .toArray((err, documents) => {
+            res.send(documents);
+          })
+        }
+      }).catch(function(error) {
+        // Handle error
+      });
+    }
+
+    
+
+    
   })
 
 });
