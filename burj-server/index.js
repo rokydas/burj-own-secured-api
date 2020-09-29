@@ -13,6 +13,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("burj-al-arab-roky-firebase-adminsdk-t2q8i-baf1d981b1.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://burj-al-arab-roky.firebaseio.com"
+});
+
+
 app.get('/', (req, res) => {
   res.send('Hello I am your new node js project');
 })
