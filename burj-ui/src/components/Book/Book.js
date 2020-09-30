@@ -49,7 +49,7 @@ const Book = () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:5000/bookings', {
+        fetch('http://localhost:5000/bookings?email='+signedInUser.email , {
             method: 'GET',
             headers: { 
                 'Content-Type': 'application/json', 
